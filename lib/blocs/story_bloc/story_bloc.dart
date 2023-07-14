@@ -37,7 +37,10 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
 
     on<RemoveAllStoryLocalEvent>((event, emit) async {
     // Remove all local stories
-    await box.clear();    
+    await box.clear(); 
+
+    final stories = await storyRepository.getAllStoryLocal();
+    emit(LoadAllStoryLocalState(stories));   
   });
   
   }

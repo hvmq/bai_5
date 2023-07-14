@@ -22,32 +22,41 @@ class ListStoryItem extends StatelessWidget {
       child: Column(
         children: [
           Row(children: [
-            CachedNetworkImage(
-              imageUrl: story.image!,
-              imageBuilder: (context, imageProvider) => Container(
+            Stack(
+              children:[ CachedNetworkImage(
+                imageUrl: story.image!,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 160,
+                  height: 100,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image:imageProvider,
+                        fit: BoxFit.cover,
+                      )),
+                ),
+                       placeholder: (context, url) => Container(
                 width: 160,
                 height: 100,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                      image:imageProvider,
-                      fit: BoxFit.cover,
-                    )),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey, 
+              ),),
+              errorWidget: (context, url, error) => Container(
+                width: 160,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey, 
+              ),),
               ),
-           placeholder: (context, url) => Container(
-    width: 160,
-    height: 100,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: Colors.grey, 
-  ),),
-  errorWidget: (context, url, error) => Container(
-    width: 160,
-    height: 100,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: Colors.grey, 
-  ),),
+              Positioned(
+                width: 24,
+                height: 24,
+                bottom: 10,
+                right: 10,
+                child: InkWell(child: Image.asset("assets/detail.png")))
+              ]
             ),
             const SizedBox(
               width: 10,
@@ -80,7 +89,7 @@ class ListStoryItem extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  "${date_utils.Date_Utils.months[dateTime.month]} ${dateTime.day},${dateTime.year}",
+                  "${date_utils.Date_Utils.months[dateTime.month]} ${dateTime.day}, ${dateTime.year}",
                   style: const TextStyle(
                       color: Color.fromARGB(255, 51, 46, 134),
                       fontSize: 12,

@@ -38,10 +38,10 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       startStreaming();
 
-      // var pageBox = await Hive.openBox("pageBox");
-      // var box = await Hive.openBox<Story>("storyBox");
-      // pageBox.clear();
-      // box.clear();
+      var pageBox = await Hive.openBox("pageBox");
+      var box = await Hive.openBox<Story>("storyBox");
+      pageBox.clear();
+      box.clear();
     });
   }
 
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
     result = await Connectivity().checkConnectivity();
     if (result != ConnectivityResult.none) {
       final storyBloc = BlocProvider.of<StoryBloc>(context);
-      await getAPIandSaveLocal(storyBloc);
+      // await getAPIandSaveLocal(storyBloc);
     } else {
       var pageBox = await Hive.openBox("pageBox");
       print(pageBox.get("pageLocal"));
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     } else {
       page = pageBox.get("pageLocal");
       final List<Story> listAll = [];
-      for (int i = 0; i < page + 1; i++) {
+      for (int i = 1; i <= page + 1; i++) {
         List<Story> newData = await StoryRepository().getStoryAPI(i);
         listAll.addAll(newData);
         if (newData.isEmpty) {
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
       }
       if (loadSuccess) {
         storyBloc.add(RemoveAllStoryLocalEvent());
-        // await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 2));
         storyBloc.add(AddStoryLocalEvent(listAll));
         pageBox.put("pageLocal", page + 1);
       }
@@ -198,14 +198,16 @@ class _HomePageState extends State<HomePage> {
             isLoading = true;
           });
 
-          await Future.delayed(Duration(seconds: 2));
+          // await Future.delayed(Duration(seconds: 2));
           final storyBloc = BlocProvider.of<StoryBloc>(context);
           var pageBox = await Hive.openBox("pageBox");
           int page = pageBox.get("pageLocal");
           List<Story> newData = await StoryRepository().getStoryAPI(page + 1);
           storyBloc.add(AddStoryLocalEvent(newData));
+          pageBox.put("pageLocal", page + 1);
           var box = await Hive.openBox<Story>("storyBox");
           print("box ${box.values.toList()}");
+          print(pageBox.get("pageLocal"));
           setState(() {
             isLoading = false;
           });
